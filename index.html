@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ciudad del nether · Materiales</title>
+<style>
+:root{--bg:#f4f1ec;--card:#fff;--tx:#1d1b18;--mu:#6e675d;--bd:#ddd6ca;--ac:#7a3b2e;--pg:#d9a21b;--ok:#2f8f4e;--okbg:#e4f3e9;--pgbg:#fbf0d3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17140f;--card:#221e18;--tx:#efe9df;--mu:#a09784;--bd:#3a342b;--ac:#e07b5f;--pg:#e8b53a;--ok:#5fcf84;--okbg:#17301f;--pgbg:#3a2f12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17140f;--card:#221e18;--tx:#efe9df;--mu:#a09784;--bd:#3a342b;--ac:#e07b5f;--pg:#e8b53a;--ok:#5fcf84;--okbg:#17301f;--pgbg:#3a2f12;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:8px 0 2px}
+.sub{color:var(--mu);font-size:.9rem;margin:0 0 14px}
+.sum{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.bar{height:12px;border-radius:6px;background:var(--bd);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.b-ok{background:var(--ok)}.b-pg{background:var(--pg)}
+.st{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.88rem;color:var(--mu)}
+.st b{color:var(--tx)}
+.tools{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;z-index:5;display:flex;flex-direction:column;gap:8px}
+input[type=search]{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit}
+.tabs{display:flex;gap:6px;overflow-x:auto}
+.tabs button{flex:none;padding:7px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--tx);font:inherit;font-size:.88rem;cursor:pointer}
+.tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.row.progress{border-left-color:var(--pg);background:var(--pgbg)}
+.row.done{border-left-color:var(--ok);background:var(--okbg)}
+.row.done .nm{text-decoration:line-through;opacity:.65}
+.info{flex:1;min-width:0}
+.nm{font-weight:600;overflow-wrap:anywhere}
+.q{color:var(--mu);font-size:.85rem}
+.btns{display:flex;gap:6px;flex:none}
+.btns button{width:44px;height:40px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font-size:1.1rem;cursor:pointer}
+.btns .p.on{background:var(--pg);border-color:var(--pg);color:#000}
+.btns .d.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.foot{margin:18px 0 30px;text-align:center}
+.foot button{padding:8px 14px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--mu);font:inherit;cursor:pointer}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;color:var(--mu);margin-bottom:10px}.top button{padding:4px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mu);margin-right:5px}.dot.on{background:var(--ok)}.dot.err{background:#c0392b}.warn{background:var(--pgbg);border:1px solid var(--pg);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:.9rem}.by{color:var(--ac);font-weight:600}.empty{text-align:center;color:var(--mu);padding:30px 0}
+</style></head><body><div class="w">
+<h1>Ciudad del nether</h1>
+<p class="sub">Progreso compartido en tiempo real · ⏳ en progreso, ✓ completado. Toca de nuevo para quitar la marca.</p>
+<div class="top"><span><i class="dot" id="dot"></i><span id="stx">Conectando…</span></span><span>Jugador: <b id="me"></b> <button id="rn">cambiar</button></span></div>
+<div class="warn" id="warn" hidden>Firebase no está configurado: el progreso solo se guarda en este navegador. Pega tu URL en <code>DB_URL</code> dentro del archivo.</div>
+<div class="sum"><div class="bar"><i class="b-ok" id="bo"></i><i class="b-pg" id="bp"></i></div>
+<div class="st"><span>Completados: <b id="so">0</b></span><span>En progreso: <b id="sp">0</b></span><span>Pendientes: <b id="sn">0</b></span><span>Bloques listos: <b id="sb">0%</b></span></div></div>
+<div class="tools"><input type="search" id="q" placeholder="Buscar material…">
+<div class="tabs" id="tabs"></div></div>
+<div id="list"></div>
+<div class="foot"><button id="rs">Reiniciar progreso</button></div>
+</div>
+<script>
+// ====== CONFIGURA ESTO ======
+const DB_URL="https://prueba-92527-default-rtdb.firebaseio.com/"; // ej: https://mi-proyecto-default-rtdb.firebaseio.com
+// ============================
+const DATA=[["stone_bricks",45357],["basalt",29631],["cobbled_deepslate",23860],["tuff",14941],["polished_blackstone_bricks",14437],["deepslate_bricks",11696],["blackstone",11473],["deepslate_brick_wall",10546],["grass_block",9355],["pale_moss_block",9256],["polished_blackstone",7430],["cracked_stone_bricks",6745],["tuff_bricks",6106],["moss_block",5836],["mossy_cobblestone",5465],["deepslate_tiles",5220],["dark_prismarine",4973],["stone_brick_stairs",4794],["andesite",4118],["polished_andesite",3584],["cracked_polished_blackstone_bricks",3268],["polished_tuff",3263],["coarse_dirt",3030],["polished_basalt",3027],["nether_wart_block",2977],["spruce_planks",2861],["stone_brick_wall",2719],["dirt",2458],["deepslate_brick_stairs",2404],["cracked_deepslate_bricks",2394],["lava_bucket",2076],["acacia_wood",1987],["stripped_dark_oak_wood",1975],["red_wool",1961],["deepslate_brick_slab",1788],["red_concrete",1781],["spruce_fence",1530],["polished_deepslate_wall",1470],["cyan_terracotta",1440],["red_stained_glass",1404],["stripped_oak_log",1111],["mud",1036],["red_stained_glass_pane",1025],["blue_stained_glass",1005],["spruce_trapdoor",994],["dark_oak_stairs",993],["podzol",972],["mud_bricks",944],["red_nether_bricks",902],["stripped_spruce_log",897],["cobbled_deepslate_wall",835],["iron_chain",821],["polished_blackstone_stairs",800],["tuff_slab",774],["stone_brick_slab",684],["stripped_oak_wood",673],["deepslate",669],["mangrove_fence",666],["cracked_deepslate_tiles",664],["black_stained_glass",651],["iron_bars",625],["lantern",623],["white_concrete",551],["white_wool",535],["white_stained_glass_pane",529],["magma_block",483],["tuff_wall",469],["rooted_dirt",458],["polished_blackstone_brick_stairs",436],["dark_oak_fence",391],["spruce_stairs",374],["packed_mud",368],["polished_blackstone_brick_slab",354],["polished_blackstone_brick_wall",354],["tuff_brick_stairs",344],["red_concrete_powder",340],["black_glazed_terracotta",336],["white_stained_glass",305],["stripped_spruce_wood",302],["red_carpet",291],["mud_brick_stairs",288],["ochre_froglight",286],["light",270],["orange_stained_glass_pane",258],["warped_planks",258],["netherite_block",252],["deepslate_tile_slab",251],["crying_obsidian",249],["polished_blackstone_wall",236],["light_blue_stained_glass",222],["orange_stained_glass",212],["nether_brick_fence",200],["cobbled_deepslate_slab",197],["anvil",192],["dark_oak_slab",187],["tuff_stairs",183],["deepslate_tile_stairs",180],["smooth_stone_slab",180],["dark_oak_trapdoor",178],["verdant_froglight",167],["granite",166],["dark_oak_fence_gate",164],["soul_lantern",163],["candle",159],["polished_granite",159],["red_candle",156],["polished_deepslate",155],["blackstone_slab",154],["water_bucket",151],["shroomlight",146],["white_carpet",145],["mossy_stone_brick_wall",143],["hopper",134],["cobbled_deepslate_stairs",129],["mangrove_trapdoor",119],["mud_brick_slab",118],["nether_bricks",118],["deepslate_tile_wall",111],["poplar_door",105],["polished_blackstone_slab",103],["black_candle",100],["iron_trapdoor",96],["chiseled_tuff",90],["dark_oak_planks",89],["leaf_litter",88],["chiseled_tuff_bricks",87],["black_concrete",85],["smooth_stone",84],["mossy_stone_bricks",82],["cherry_planks",80],["warped_wart_block",78],["soul_campfire",77],["mossy_cobblestone_wall",76],["ladder",75],["yellow_stained_glass_pane",71],["birch_leaves",70],["mud_brick_wall",70],["acacia_leaves",67],["andesite_wall",67],["clay",67],["light_gray_concrete",66],["mossy_cobblestone_slab",63],["red_glazed_terracotta",61],["honey_block",60],["lever",59],["dark_prismarine_slab",58],["oak_wood",58],["pale_oak_leaves",57],["zombified_piglin_spawn_egg",53],["tinted_glass",52],["lectern",51],["cobblestone_wall",48],["glow_lichen",45],["pale_moss_carpet",44],["blackstone_wall",41],["mangrove_wood",41],["resin_block",40],["pale_hanging_moss",40],["short_dry_grass",39],["diorite_wall",37],["white_candle",36],["light_gray_stained_glass_pane",34],["end_rod",33],["tuff_brick_wall",32],["polished_blackstone_button",31],["polished_tuff_wall",31],["black_wool",28],["pale_oak_stairs",28],["bookshelf",27],["firefly_bush",26],["spruce_slab",26],["wither_skeleton_skull",26],["light_blue_terracotta",25],["dead_tube_coral_fan",22],["dark_prismarine_stairs",20],["piston",20],["torch",20],["mangrove_roots",19],["cobweb",18],["pale_oak_sign",18],["honeycomb_block",16],["lime_stained_glass_pane",16],["pale_oak_fence",16],["polished_deepslate_stairs",16],["black_stained_glass_pane",15],["dead_horn_coral",15],["red_nether_brick_wall",15],["dark_oak_sign",14],["oak_trapdoor",14],["oxidized_lightning_rod",14],["painting",14],["tall_dry_grass",14],["cyan_wool",13],["polished_tuff_stairs",13],["chiseled_deepslate",12],["cyan_concrete",12],["deepslate_coal_ore",12],["lily_pad",12],["villager_spawn_egg",12],["gray_candle",11],["polished_deepslate_slab",11],["mangrove_slab",10],["oak_stairs",10],["scaffolding",10],["waxed_weathered_copper_bars",10],["dark_oak_door",9],["light_gray_concrete_powder",9],["nether_brick_wall",9],["stone_slab",9],["chiseled_stone_bricks",8],["end_crystal",8],["obsidian",8],["pale_oak_slab",8],["red_banner",8],["coal_ore",7],["piglin_spawn_egg",7],["infested_mossy_stone_bricks",6],["gray_stained_glass",5],["red_nether_brick_stairs",5],["twisting_vines",5],["black_banner",4],["dead_brain_coral_fan",4],["dead_fire_coral_fan",4],["gray_carpet",4],["light_gray_stained_glass",4],["observer",4],["spruce_sign",4],["armor_stand",3],["coal_block",3],["diorite_stairs",3],["light_gray_wool",3],["lodestone",3],["polished_diorite_stairs",3],["polished_tuff_slab",3],["blackstone_stairs",2],["chiseled_polished_blackstone",2],["dead_horn_coral_fan",2],["dragon_head",2],["enderman_spawn_egg",2],["moss_carpet",2],["mossy_stone_brick_slab",2],["pale_oak_trapdoor",2],["pale_oak_wood",2],["campfire",1],["gray_concrete_powder",1],["hay_block",1],["jungle_pressure_plate",1],["light_gray_banner",1],["mangrove_stairs",1],["player_head",1],["polished_andesite_stairs",1],["prismarine_wall",1],["red_nether_brick_slab",1]];
+const ONLINE=DB_URL.startsWith("https://");
+const BASE=DB_URL.replace(/\/$/,"")+"/progress";
+const LKEY="nether-materials-v2",NKEY="nether-player";
+let S={},filter="all",term="",player="";
+const $=id=>document.getElementById(id);
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function askName(force){
+ let n=force?"":(lsGet(NKEY)||"");
+ while(!n){n=(prompt("¿Cómo te llamas en el servidor?",lsGet(NKEY)||"")||"").trim().slice(0,24);if(!n&&!force)n="Anónimo";if(force&&!n)break}
+ if(n){player=n;lsSet(NKEY,n)}else player=lsGet(NKEY)||"Anónimo";
+ $("me").textContent=player;
+}
+askName(false);
+$("rn").onclick=()=>{askName(true);render()};
+function setStatus(t,c){$("stx").textContent=t;$("dot").className="dot "+(c||"")}
+if(ONLINE){
+ const es=new EventSource(BASE+".json");
+ es.addEventListener("put",e=>{const m=JSON.parse(e.data);
+  if(m.path==="/")S=m.data||{};
+  else{const k=m.path.slice(1);if(m.data==null)delete S[k];else S[k]=m.data}
+  setStatus("Sincronizado","on");render()});
+ es.addEventListener("patch",e=>{const m=JSON.parse(e.data);
+  if(m.path==="/")for(const k in m.data){if(m.data[k]==null)delete S[k];else S[k]=m.data[k]}
+  render()});
+ es.onerror=()=>setStatus("Reconectando…","err");
+}else{
+ $("warn").hidden=false;setStatus("Modo local","");
+ try{S=JSON.parse(lsGet(LKEY)||"{}")}catch(e){S={}}
+}
+function setItem(id,v){
+ const cur=S[id]&&S[id].s;
+ const next=cur===v?null:{s:v,by:player};
+ if(next)S[id]=next;else delete S[id];
+ render();
+ if(ONLINE){
+  fetch(BASE+"/"+encodeURIComponent(id)+".json",{method:next?"PUT":"DELETE",body:next?JSON.stringify(next):undefined})
+   .catch(()=>setStatus("Error al guardar","err"));
+ }else lsSet(LKEY,JSON.stringify(S));
+}
+const fmt=n=>n.toLocaleString("es-CO");
+const name=s=>s.replace(/_/g," ").replace(/^./,c=>c.toUpperCase());
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function qty(n){const s=Math.floor(n/64),r=n%64;return fmt(n)+(n>=64?" · "+(s?s+" stack"+(s>1?"s":""):"")+(r?(s?" + ":"")+r:""):"")}
+const tabs=[["all","Todos"],["pending","Pendientes"],["progress","En progreso"],["done","Completados"]];
+$("tabs").innerHTML=tabs.map(t=>`<button data-f="${t[0]}">${t[1]}</button>`).join("");
+$("tabs").onclick=e=>{const f=e.target.dataset.f;if(f){filter=f;render()}};
+$("q").oninput=e=>{term=e.target.value.toLowerCase();render()};
+$("list").onclick=e=>{const b=e.target.closest("button");if(b)setItem(b.dataset.id,b.dataset.v)};
+$("rs").onclick=()=>{
+ if(!confirm("¿Borrar el progreso de TODOS los jugadores?"))return;
+ S={};render();
+ if(ONLINE)fetch(BASE+".json",{method:"DELETE"}).catch(()=>setStatus("Error al guardar","err"));else lsSet(LKEY,"{}");
+};
+function render(){
+ let tot=0,dn=0,pg=0,nd=0,np=0;
+ DATA.forEach(([id,n])=>{tot+=n;const s=S[id]&&S[id].s;if(s==="done"){dn+=n;nd++}else if(s==="progress"){pg+=n;np++}});
+ $("bo").style.width=dn/tot*100+"%";$("bp").style.width=pg/tot*100+"%";
+ $("so").textContent=nd;$("sp").textContent=np;$("sn").textContent=DATA.length-nd-np;$("sb").textContent=Math.round(dn/tot*100)+"%";
+ document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.f===filter));
+ const rows=DATA.filter(([id])=>{
+  const s=(S[id]&&S[id].s)||"pending";
+  return (filter==="all"||s===filter)&&(!term||id.includes(term.replace(/ /g,"_"))||name(id).toLowerCase().includes(term))
+ }).map(([id,n])=>{const o=S[id]||{},s=o.s||"";
+  const who=s?` · <span class="by">${esc(o.by||"?")}</span>`:"";
+  return `<div class="row ${s}"><div class="info"><div class="nm">${name(id)}</div><div class="q">${qty(n)}${who}</div></div>
+  <div class="btns"><button class="p ${s==="progress"?"on":""}" data-id="${id}" data-v="progress" title="En progreso">⏳</button><button class="d ${s==="done"?"on":""}" data-id="${id}" data-v="done" title="Completado">✓</button></div></div>`}).join("");
+ $("list").innerHTML=rows||'<div class="empty">No hay materiales en esta vista.</div>';
+}
+render();
+</script></body></html>
